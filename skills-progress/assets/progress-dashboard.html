@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ralph Progress Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#09090b;--surface:#111116;--s2:#18181f;--border:#23233a;--text:#e4e4ef;--dim:#6b6b85;--accent:#7c6aff;--green:#22c55e;--green-bg:rgba(34,197,94,.1);--green-bd:rgba(34,197,94,.25);--amber:#f59e0b;--amber-bg:rgba(245,158,11,.1);--amber-bd:rgba(245,158,11,.25);--gray:#52526a;--gray-bg:rgba(82,82,106,.08);--gray-bd:rgba(82,82,106,.2)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.c{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+.hd{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.hd h1{font-size:1.3rem;font-weight:700}.hd .pn{color:var(--accent)}
+.hd .br{font-size:.78rem;color:var(--dim);margin-top:.35rem;font-family:monospace}
+.hd .ds{font-size:.82rem;color:var(--dim);margin-top:.2rem}
+.pm{display:flex;justify-content:space-between;font-size:.78rem;color:var(--dim);margin-bottom:.4rem}
+.pm .pc{font-weight:700;font-size:.85rem;color:var(--text)}
+.pt{height:6px;background:var(--s2);border-radius:3px;overflow:hidden;margin-bottom:2rem}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),#4ade80);transition:width .6s}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem}
+.col{min-height:200px}
+.col-hd{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid var(--border)}
+.col.gp .col-hd{border-bottom-color:var(--green)}.col.ap .col-hd{border-bottom-color:var(--amber)}.col.pp .col-hd{border-bottom-color:var(--gray)}
+.col-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.col.gp .col-icon{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green)}
+.col.ap .col-icon{background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber)}
+.col.pp .col-icon{background:var(--gray-bg);border:1px solid var(--gray-bd);color:var(--gray)}
+.col-title{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.col.gp .col-title{color:var(--green)}.col.ap .col-title{color:var(--amber)}.col.pp .col-title{color:var(--gray)}
+.col-count{font-size:.68rem;background:var(--s2);padding:.1rem .45rem;border-radius:999px;font-weight:600;margin-left:auto}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:.6rem;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-1px)}
+.col.gp .card{border-left:3px solid var(--green);background:linear-gradient(135deg,var(--green-bg),var(--surface))}
+.col.gp .card:hover{border-color:var(--green-bd)}
+.col.ap .card{border-left:3px solid var(--amber);background:linear-gradient(135deg,var(--amber-bg),var(--surface));box-shadow:0 0 24px rgba(245,158,11,.04)}
+.col.ap .card:hover{border-color:var(--amber-bd)}
+.col.pp .card{border-left:3px solid var(--gray-bd);opacity:.65}
+.col.pp .card:hover{opacity:.85}
+.card-top{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
+.card-ord{font-size:.68rem;font-weight:700;color:var(--dim);min-width:1.5rem}
+.card-id{font-size:.7rem;font-family:monospace;color:var(--dim)}
+.card-title{font-size:.88rem;font-weight:600;flex:1;line-height:1.3}
+.card-desc{font-size:.78rem;color:var(--dim);margin-top:.2rem;line-height:1.4}
+.card-tags{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.4rem}
+.tag{font-size:.68rem;color:var(--dim);background:var(--s2);padding:.15rem .4rem;border-radius:3px}
+.col.gp .tag{text-decoration:line-through;opacity:.5}
+.card-notes{font-size:.75rem;color:var(--accent);font-style:italic;margin-top:.3rem}
+.col-empty{display:flex;align-items:center;justify-content:center;min-height:120px;border:1px dashed var(--border);border-radius:10px;color:var(--dim);font-size:.8rem}
+.as{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.as-title{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:.75rem}
+.ae{padding:.6rem 0;border-bottom:1px solid var(--border)}.ae:last-child{border-bottom:none}
+.ae .eh{font-size:.82rem;font-weight:600}.ae .eb{color:var(--dim);font-size:.75rem;line-height:1.5;white-space:pre-line;margin-top:.15rem}
+.cb{background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.02));border:1px solid var(--green-bd);border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1.5rem}
+.cb h2{color:var(--green);font-size:1.1rem}.cb p{color:var(--dim);font-size:.82rem;margin-top:.3rem}
+.ft{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.68rem;color:var(--dim)}
+.ri{display:inline-flex;align-items:center;gap:.35rem}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.dot.err{background:#ef4444}
+.ld{display:flex;align-items:center;justify-content:center;min-height:50vh;color:var(--dim);gap:.75rem}
+.spin{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sn .7s linear infinite}
+@keyframes sn{to{transform:rotate(360deg)}}
+.err-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:2rem;text-align:center;color:#ef4444}
+.err-box p{color:var(--dim);font-size:.82rem;margin-top:.5rem}
+@media(max-width:768px){.cols{grid-template-columns:1fr}.c{padding:1rem}}
+</style>
+</head>
+<body>
+<div class="c" id="app"><div class="ld"><div class="spin"></div>Loading...</div></div>
+<script>
+const R=5000;let _ok=true;
+async function fj(u){const r=await fetch(u+"?t="+Date.now());if(!r.ok)throw new Error(r.statusText);return r.json()}
+async function ft2(u){try{const r=await fetch(u+"?t="+Date.now());return r.ok?await r.text():""}catch{return""}}
+function pp(t){if(!t)return[];const e=[];let c=null;for(const l of t.split("\n")){if(l.startsWith("## ")){if(c)e.push(c);c={h:l.replace("## ",""),b:""}}else if(c){if(l==="---")continue;c.b+=(c.b?"\n":"")+l}}if(c)e.push(c);return e.slice(-5).reverse()}
+function esc(s){if(!s)return"";const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function card(s){return '<div class="card"><div class="card-top"><span class="card-ord">#'+s.priority+'</span><span class="card-id">'+esc(s.id)+'</span><span class="card-title">'+esc(s.title)+'</span></div>'+(s.description?'<div class="card-desc">'+esc(s.description)+'</div>':"")+(s.acceptanceCriteria&&s.acceptanceCriteria.length?'<div class="card-tags">'+s.acceptanceCriteria.map(c=>'<span class="tag">'+esc(c)+'</span>').join("")+'</div>':"")+(s.notes?'<div class="card-notes">'+esc(s.notes)+'</div>':"")+'</div>'}
+function render(prd,pt){const ss=(prd.userStories||[]).map((s,i)=>({...s,index:i})),t=ss.length,dn=ss.filter(s=>s.passes),pd=ss.filter(s=>!s.passes),p=dn.length,r=pd.length,pct=t>0?Math.round(p/t*100):0,ic=pct===100,ac=pd.length>0?pd[0]:null,lp=ac?pd.slice(1):[],al=pp(pt);let h="";
+h+='<div class="hd"><h1><span class="pn">'+esc(prd.project||"Project")+'</span> Progress</h1><div class="br">'+esc(prd.branchName||"N/A")+'</div>'+(prd.description?'<div class="ds">'+esc(prd.description)+'</div>':"")+'</div>';
+if(ic)h+='<div class="cb"><h2>All Stories Complete</h2><p>'+t+' stories done.</p></div>';
+h+='<div class="pm"><span>'+p+' of '+t+' stories done</span><span class="pc">'+pct+'%</span></div><div class="pt"><div class="pf" style="width:'+pct+'%"></div></div>';
+h+='<div class="cols">';
+h+='<div class="col gp"><div class="col-hd"><div class="col-icon">&#10003;</div><span class="col-title">Completed</span>'+(dn.length?'<span class="col-count">'+dn.length+'</span>':"")+'</div>'+(dn.length?dn.map(s=>card(s)).join(""):'<div class="col-empty">No completed stories</div>')+'</div>';
+if(ac){h+='<div class="col ap"><div class="col-hd"><div class="col-icon">&#9679;</div><span class="col-title">In Progress</span><span class="col-count">1</span></div>'+card(ac)+'</div>'}
+if(lp.length){h+='<div class="col pp"><div class="col-hd"><div class="col-icon">&#9675;</div><span class="col-title">Up Next</span>'+(lp.length?'<span class="col-count">'+lp.length+'</span>':"")+'</div>'+lp.map(s=>card(s)).join("")+'</div>'}
+if(!ac&&!lp.length){h+='<div class="col pp"><div class="col-hd"><div class="col-icon">&#9675;</div><span class="col-title">Up Next</span></div><div class="col-empty">All done!</div></div>'}
+h+='</div>';
+if(al.length)h+='<div class="as"><div class="as-title">Recent Activity</div>'+al.map(e=>'<div class="ae"><div class="eh">'+esc(e.h)+'</div><div class="eb">'+esc(e.b.trim())+'</div></div>').join("")+'</div>';
+h+='<div class="ft"><div class="ri"><div class="dot'+(_ok?"":" err")+'"></div>'+(_ok?"Auto-refresh 5s":"Reconnecting...")+'</div><div>'+new Date().toLocaleTimeString()+'</div></div>';
+document.getElementById("app").innerHTML=h}
+function rerr(m){document.getElementById("app").innerHTML='<div class="err-box"><h3>Could not load progress</h3><p>'+esc(m)+'</p><p style="margin-top:1rem">Make sure prd.json is in the same directory.</p></div>'}
+async function ref(){try{const[p,t]=await Promise.all([fj("prd.json"),ft2("progress.txt")]);_ok=true;render(p,t)}catch(e){_ok=false;if(document.querySelector(".ld"))rerr(e.message)}}
+(async()=>{await ref();setInterval(ref,R)})();
+</script>
+</body>
+</html>
