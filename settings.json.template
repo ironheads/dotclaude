@@ -8,7 +8,8 @@
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-5-turbo",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-5.1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "ENABLE_TOOL_SEARCH": "false"
+    "ENABLE_TOOL_SEARCH": "0",
+    "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1"
   },
   "permissions": {
     "allow": [],
