@@ -53,6 +53,24 @@ if grep -q '{{.*}}' "$OUTPUT"; then
     warn "settings.json 中仍有未替换的模板变量，请检查 .env"
 fi
 
+# ---- 生成 .claude.json ----
+info "生成 .claude.json..."
+CLAUDE_JSON_TEMPLATE="$SCRIPT_DIR/claude.json.template"
+CLAUDE_JSON_OUTPUT="$SCRIPT_DIR/.claude.json"
+
+sed \
+    -e "s|{{ANTHROPIC_AUTH_TOKEN}}|${ANTHROPIC_AUTH_TOKEN:-}|g" \
+    -e "s|{{CONTEXT7_API_KEY}}|${CONTEXT7_API_KEY:-}|g" \
+    "$CLAUDE_JSON_TEMPLATE" > "$CLAUDE_JSON_OUTPUT"
+
+if grep -q '{{.*}}' "$CLAUDE_JSON_OUTPUT"; then
+    warn ".claude.json 中仍有未替换的模板变量，请检查 .env"
+fi
+
+if grep -q '{{.*}}' "$OUTPUT"; then
+    warn "settings.json 中仍有未替换的模板变量，请检查 .env"
+fi
+
 # ---- 创建目标目录 ----
 mkdir -p "$HOME/.claude/rules"
 mkdir -p "$HOME/.claude/skills"
@@ -60,6 +78,10 @@ mkdir -p "$HOME/.claude/skills"
 # ---- 部署 settings.json ----
 info "部署 settings.json -> ~/.claude/settings.json"
 cp "$OUTPUT" "$HOME/.claude/settings.json"
+
+# ---- 部署 .claude.json ----
+info "部署 .claude.json -> ~/.claude.json"
+cp "$CLAUDE_JSON_OUTPUT" "$HOME/.claude.json"
 
 # ---- 部署 rules ----
 info "部署 rules -> ~/.claude/rules/"
@@ -76,11 +98,12 @@ for skill_dir in "$SCRIPT_DIR"/skills-*; do
 done
 
 # ---- 清理生成的临时文件 ----
-rm -f "$OUTPUT"
+rm -f "$OUTPUT" "$CLAUDE_JSON_OUTPUT"
 
 echo ""
 info "安装完成！"
 info "已部署:"
+echo "  - ~/.claude.json (onboarding + MCP servers)"
 echo "  - ~/.claude/settings.json"
 echo "  - ~/.claude/rules/"
 echo "  - ~/.claude/skills/ (4 custom skills)"
