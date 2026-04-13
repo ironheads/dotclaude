@@ -97,17 +97,15 @@ for skill_dir in "$SCRIPT_DIR"/skills-*; do
     fi
 done
 
-# ---- 部署 record.md (飞书记录规则) ----
-info "部署 record.md -> ~/.claude/rules/record.md"
-if [ -f "$SCRIPT_DIR/rules/record.md" ]; then
-    cp "$SCRIPT_DIR/rules/record.md" "$HOME/.claude/rules/record.md"
-else
-    warn "rules/record.md 不存在，跳过"
-fi
-
-# ---- 尝试安装字节内部 skills (需要内网环境) ----
+# ---- 尝试安装字节内部 skills 和部署 record.md (需要内网环境) ----
 if curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://bnpm.byted.org 2>/dev/null | grep -q "200"; then
     info "检测到内网环境，安装字节内部 skills..."
+
+    # 部署 record.md (飞书记录规则)
+    if [ -f "$SCRIPT_DIR/rules/record.md" ]; then
+        info "部署 record.md -> ~/.claude/rules/record.md"
+        cp "$SCRIPT_DIR/rules/record.md" "$HOME/.claude/rules/record.md"
+    fi
 
     info "安装 bytedance-tools skill..."
     npm_config_registry="https://bnpm.byted.org" npx -y @tiktok-fe/skills@latest add chenyunpeng-1024/skills --skill bytedance-tools --source local 2>/dev/null || {
