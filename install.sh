@@ -150,6 +150,10 @@ if curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://bnpm.byted.
     if ! command -v npx &>/dev/null; then
         warn "未找到 npx，无法安装内部 skills。请先安装 Node.js: https://nodejs.org"
     else
+        # npx @tiktok-fe/skills 安装到 cwd/.claude/skills/，需要切到 HOME
+        ORIGINAL_DIR="$(pwd)"
+        cd "$HOME"
+
         info "安装 bytedance-tools skill..."
         if ! npm_config_registry="https://bnpm.byted.org" npx -y @tiktok-fe/skills@latest add chenyunpeng-1024/skills --skill bytedance-tools --source local 2>&1; then
             warn "安装 bytedance-tools 失败，跳过"
@@ -159,6 +163,8 @@ if curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 http://bnpm.byted.
         if ! npm_config_registry="https://bnpm.byted.org" npx -y @tiktok-fe/skills@latest add sunzhangliang-harris/skills --skill daily-record --source local 2>&1; then
             warn "安装 daily-record 失败，跳过"
         fi
+
+        cd "$ORIGINAL_DIR"
 
         info "内部 skills 安装完成"
     fi
