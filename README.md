@@ -4,22 +4,21 @@ Claude Code 便携配置，跨机器同步使用。
 
 ## 快速开始
 
-```bash
-git clone git@github.com:ironheads/dotclaude.git ~/.claude-config
-cp ~/.claude-config/.env.example ~/.claude-config/.env
-```
-
-编辑 `~/.claude-config/.env`，填入：
-
-```
-ANTHROPIC_AUTH_TOKEN=your_token_here
-ANTHROPIC_BASE_URL=https://open.bigmodel.cn/api/anthropic
-CONTEXT7_API_KEY=your_context7_key_here
-```
-
-然后运行安装脚本：
+一行命令搞定，按提示输入两个 API key 即可：
 
 ```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/ironheads/dotclaude/main/install.sh)
+```
+
+脚本会依次要求输入：
+- `ANTHROPIC_AUTH_TOKEN` — API 认证密钥
+- `ANTHROPIC_BASE_URL` — 默认 `https://open.bigmodel.cn/api/anthropic`，可直接回车
+- `CONTEXT7_API_KEY` — Context7 文档查询密钥
+
+也可以先克隆再运行：
+
+```bash
+git clone https://github.com/ironheads/dotclaude.git ~/.claude-config
 bash ~/.claude-config/install.sh
 ```
 
